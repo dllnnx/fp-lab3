@@ -1,0 +1,3 @@
+(library
+ (name fp_lab3)
+ (libraries io interpolations))
