@@ -1,4 +1,4 @@
 (executable
  (public_name fp-lab3)
  (name main)
- (libraries fp_lab3))
+ (libraries fp_lab3 types))

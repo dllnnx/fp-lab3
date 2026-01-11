@@ -1,2 +1,3 @@
 (library
- (name interpolations))
+ (name interpolations)
+ (libraries types))
