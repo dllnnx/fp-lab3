@@ -3,7 +3,12 @@ let generate_points_in_range step x_min x_max f =
     if x >= x_max then List.rev acc
     else generate (x +. step) ((x, f x) :: acc)
   in
-  generate (x_min +. step) []
+  let first_point = ceil (x_min /. step) *. step in
+  let start_x = 
+    if abs_float (first_point -. x_min) < 1e-10 then first_point +. step 
+    else first_point
+  in
+  generate start_x []
 
 let linear_two_points (x1, y1) (x2, y2) x =
   let ratio = (x -. x1) /. (x2 -. x1) in
