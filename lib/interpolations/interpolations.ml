@@ -1,11 +1,10 @@
 let generate_points_in_range step x_min x_max f =
   let rec generate x acc =
-    if x >= x_max then List.rev acc
-    else generate (x +. step) ((x, f x) :: acc)
+    if x >= x_max then List.rev acc else generate (x +. step) ((x, f x) :: acc)
   in
   let first_point = ceil (x_min /. step) *. step in
-  let start_x = 
-    if abs_float (first_point -. x_min) < 1e-10 then first_point +. step 
+  let start_x =
+    if abs_float (first_point -. x_min) < 1e-10 then first_point +. step
     else first_point
   in
   generate start_x []
@@ -24,7 +23,9 @@ let linear_interpolation step points =
             let segment_func x = linear_two_points (x1, y1) (x2, y2) x in
             let x_min = x1 in
             let x_max = x2 in
-            let new_points = generate_points_in_range step x_min x_max segment_func in
+            let new_points =
+              generate_points_in_range step x_min x_max segment_func
+            in
             process_segments (new_points :: acc) ((x2, y2) :: rest)
         | _ -> List.flatten (List.rev acc)
       in
@@ -64,5 +65,5 @@ let lagrange_interpolation step n points =
 
     let x_min = fst (List.hd window) in
     let x_max = fst (List.hd (List.rev window)) in
-    
+
     generate_points_in_range step x_min x_max (lagrange_two_points window)
