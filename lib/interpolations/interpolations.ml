@@ -1,29 +1,31 @@
+let generate_points_in_range step x_min x_max f =
+  let rec generate x acc =
+    if x >= x_max then List.rev acc
+    else generate (x +. step) ((x, f x) :: acc)
+  in
+  generate (x_min +. step) []
+
+let linear_two_points (x1, y1) (x2, y2) x =
+  let ratio = (x -. x1) /. (x2 -. x1) in
+  y1 +. ((y2 -. y1) *. ratio)
+
 let linear_interpolation step points =
   match points with
   | [] | [ _ ] -> []
   | _ ->
-      let rec generate_points_with_step (x1, y1) (x2, y2) acc =
-        if x1 +. step >= x2 then acc
-        else
-          let ratio = step /. (x2 -. x1) in
-          let y = y1 +. ((y2 -. y1) *. ratio) in
-          generate_points_with_step
-            (x1 +. step, y)
-            (x2, y2)
-            ((x1 +. step, y) :: acc)
-      in
-      let rec interpolate acc pts =
-        match pts with
+      let rec process_segments acc segments =
+        match segments with
         | (x1, y1) :: (x2, y2) :: rest ->
-            let intermediate_points =
-              generate_points_with_step (x1, y1) (x2, y2) acc
-            in
-            interpolate intermediate_points ((x2, y2) :: rest)
-        | _ -> acc
+            let segment_func x = linear_two_points (x1, y1) (x2, y2) x in
+            let x_min = x1 in
+            let x_max = x2 in
+            let new_points = generate_points_in_range step x_min x_max segment_func in
+            process_segments (new_points :: acc) ((x2, y2) :: rest)
+        | _ -> List.flatten (List.rev acc)
       in
-      List.rev (interpolate [] points)
+      process_segments [] points
 
-let lagrange points x =
+let lagrange_two_points points x =
   let n = List.length points in
   if n < 2 then failwith "At least 2 points required for Lagrange interpolation"
   else
@@ -44,7 +46,7 @@ let lagrange points x =
     in
     sum_terms 0 0.0
 
-let lagrange_interpolation_step step n points =
+let lagrange_interpolation step n points =
   if List.length points < n then []
   else
     let window =
@@ -57,9 +59,5 @@ let lagrange_interpolation_step step n points =
 
     let x_min = fst (List.hd window) in
     let x_max = fst (List.hd (List.rev window)) in
-
-    let rec generate x acc =
-      if x >= x_max then List.rev acc
-      else generate (x +. step) ((x, lagrange window x) :: acc)
-    in
-    generate (x_min +. step) []
+    
+    generate_points_in_range step x_min x_max (lagrange_two_points window)

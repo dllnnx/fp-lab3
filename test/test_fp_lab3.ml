@@ -41,12 +41,12 @@ module TestInterpolations = struct
 
   let test_lagrange_interpolation_step_simple () =
     let points = [ (0.0, 0.0); (1.0, 1.0); (2.0, 4.0) ] in
-    let result = Interpolations.lagrange_interpolation_step 1.0 3 points in
+    let result = Interpolations.lagrange_interpolation 1.0 3 points in
     Alcotest.(check bool) "non-empty result" true (List.length result > 0)
 
   let test_lagrange_interpolation_insufficient_points () =
     let points = [ (0.0, 0.0); (1.0, 1.0) ] in
-    let result = Interpolations.lagrange_interpolation_step 1.0 3 points in
+    let result = Interpolations.lagrange_interpolation 1.0 3 points in
     let expected = [] in
     Alcotest.(check (list testable_point)) "insufficient points" expected result
 end

@@ -24,7 +24,7 @@ let parse_args () =
 let interpolate_stream algorithm step points =
   match algorithm with
   | Linear -> Interpolations.linear_interpolation step points
-  | Lagrange n -> Interpolations.lagrange_interpolation_step step n points
+  | Lagrange n -> Interpolations.lagrange_interpolation step n points
 
 let get_prefix = function Linear -> "linear:" | Lagrange _ -> "lagrange:"
 
